@@ -25,10 +25,28 @@ def index_articles():
 
     pass
 
-@app.route('/articles/<int:id>')
+@app.route('/articles/<int:id>', methods=['GET'])
 def show_article(id):
+    """
+        session['page_views'] = 0
 
-    pass
+        response = make_response(
+            jsonify({
+                'session': {
+                    'session_key': key,
+                    'session_value': session[key],
+                    'session_accessed': session.accessed
+                    'page_views': session['page_views']
+                },
+                'cookies': [{cookie: request.cookies[cookie]}
+                            for cookie in request.cookies],
+            }),
+            200
+        )
 
+        response.set_cookie('mouse', 'Cookie')
+
+        return response
+    """
 if __name__ == '__main__':
     app.run(port=5555)
