@@ -22,31 +22,54 @@ def clear_session():
 
 @app.route('/articles')
 def index_articles():
-
-    pass
+    articles = Article.query.all()
+    return jsonify([{'id': article.id, 'title': article.title, 'content': article.content} for article in articles])
 
 @app.route('/articles/<int:id>', methods=['GET'])
 def show_article(id):
     """
-        session['page_views'] = 0
+    article = Article.query.filter_by(id=id).first()
+    if not article:
+        return "Article not found", 404
+    
+    if "page_views" in session:
+        session['page_views'] += 1  # Incrementing session data
+    else:
+        session['page_views'] = 1  # Initializing session data
 
-        response = make_response(
-            jsonify({
-                'session': {
-                    'session_key': key,
-                    'session_value': session[key],
-                    'session_accessed': session.accessed
-                    'page_views': session['page_views']
-                },
-                'cookies': [{cookie: request.cookies[cookie]}
-                            for cookie in request.cookies],
-            }),
-            200
-        )
+    return f"Total visits: {session['page_views']}"
 
-        response.set_cookie('mouse', 'Cookie')
+"""
 
-        return response
-    """
 if __name__ == '__main__':
     app.run(port=5555)
+
+
+# Notes on getting website visitors counted through cookies
+"""
+# from flask import Flask, request, make_response 
+  
+app = Flask(__name__) 
+app.config['DEBUG'] = True
+  
+  
+@app.route('/') 
+def vistors_count(): 
+    # Converting str to int 
+    count = int(request.cookies.get('visitors count', 0)) 
+    # Getting the key-visitors count value as 0 
+    count = count+1
+    output = 'You visited this page for '+str(count) + ' times'
+    resp = make_response(output) 
+    resp.set_cookie('visitors count', str(count)) 
+    return resp 
+  
+  
+@app.route('/get') 
+def get_vistors_count(): 
+    count = request.cookies.get('visitors count') 
+    return count 
+  
+  
+app.run() 
+"""
